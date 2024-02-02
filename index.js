@@ -26,6 +26,7 @@ app.get("/", (req, res) => {
 /* GET */
 //猫画像のurlを返す
 app.get("/api/cat", async (req, res) => {
+  console.log("cat");
   const responese = await fetch(url);
   const imgJSON = await responese.json();
   res.send(imgJSON[0].url);
