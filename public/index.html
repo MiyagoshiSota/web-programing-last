@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./index.css" />
+    <title>猫ジェネレータ</title>
+  </head>
+  <body>
+    <header>
+      <h3>名言猫ジェネレータ🐈</h3>
+      <nav class="header__nav nav" id="js-nav">
+        <ul class="nav__items">
+          <li class="nav-items__item">
+            <a href="./index.html">名言猫を作る</a>
+          </li>
+          <li class="nav-items__item">
+            <a href="./favorite.html">お気に入りを見る</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <div class="contents_div">
+      <div class="main">
+        <h1>今回の名言猫</h1>
+        <div class="main_items">
+          <img alt="cat" class="cat_img" />
+          <h2 class="meihen"></h2>
+          <h4 class="auther"></h4>
+        </div>
+        <button id="next_button">次の名言猫</button>
+        <button id="add_button">お気に入り</button>
+      </div>
+    </div>
+    <script>
+      const localStorage_keys = [];
+      window.onload = function () {
+        /*ローカルストレージのキーをインデックスを取得*/
+        for (var i = 0, length = localStorage.length; i < length; ++i) {
+          localStorage_keys.push(localStorage.key(i));
+        }
+
+        /*初期猫画像*/
+        const catXHR = new XMLHttpRequest();
+        catXHR.open("GET", "/api/cat");
+        catXHR.onload = (event) => {
+          const img = document.querySelector("img");
+          img.src = catXHR.response;
+        };
+        catXHR.send();
+
+        /*初期名言*/
+        const meigenXHR = new XMLHttpRequest();
+        meigenXHR.open("GET", "/api/meigen");
+        meigenXHR.onload = (event) => {
+          const meigen = document.querySelector("h2");
+          const auther = document.querySelector("h4");
+          const meigenJson = JSON.parse(meigenXHR.response);
+          meigen.textContent = meigenJson[0].meigen;
+          auther.textContent = meigenJson[0].auther;
+        };
+        meigenXHR.send();
+      };
+
+      /*nextボタン*/
+      const button = document.querySelector("#next_button");
+      button.addEventListener("click", () => {
+        /*猫画像*/
+        const catXHR = new XMLHttpRequest();
+        catXHR.open("GET", "/api/cat");
+        catXHR.onload = (event) => {
+          const img = document.querySelector("img");
+          img.src = catXHR.response;
+          console.log(catXHR.response);
+        };
+        catXHR.send();
+
+        /*名言*/
+        const meigenXHR = new XMLHttpRequest();
+        meigenXHR.open("GET", "/api/meigen");
+        meigenXHR.onload = (event) => {
+          const meigen = document.querySelector("h2");
+          const auther = document.querySelector("h4");
+          const meigenJson = JSON.parse(meigenXHR.response);
+          meigen.textContent = meigenJson[0].meigen;
+          auther.textContent = meigenJson[0].auther;
+        };
+        meigenXHR.send();
+      });
+
+      /*お気に入りボタン*/
+      const add_button = document.querySelector("#add_button");
+      add_button.addEventListener("click", () => {
+        const catUrl = document.querySelector(".cat_img").src;
+        const meigen = document.querySelector("h2");
+        const auther = document.querySelector("h4");
+        const meigenJson = {
+          catUrl: catUrl,
+          meigen: meigen.textContent,
+          auther: auther.textContent,
+        };
+        const meigenJsonString = JSON.stringify(meigenJson);
+        localStorage.setItem(localStorage_keys.length + 1, meigenJsonString);
+
+        /*ローカルストレージのキーをインデックスを取得*/
+        for (var i = 0, length = localStorage.length; i < length; ++i) {
+          localStorage_keys.push(localStorage.key(i));
+        }
+        window.location.reload(true);
+      });
+    </script>
+  </body>
+</html>

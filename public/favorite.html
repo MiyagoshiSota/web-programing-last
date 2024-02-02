@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./index.css" />
+    <title>猫ジェネレータ</title>
+  </head>
+  <body>
+    <header>
+      <h3>名言猫ジェネレータ🐈</h3>
+      <nav class="header__nav nav" id="js-nav">
+        <ul class="nav__items">
+          <li class="nav-items__item">
+            <a href="./index.html">名言猫を作る</a>
+          </li>
+          <li class="nav-items__item">
+            <a href="./favorite.html">お気に入りを見る</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <h2>お気に入り一覧</h2>
+    <div class="collection_div">
+      <div class="collection_div_div">
+        <div class="collection"></div>
+      </div>
+    </div>
+
+    <div class="overflow-div">
+      <div id="overflow">
+        <div class="conf"></div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script>
+      const localStorage_keys = [];
+      window.onload = () => {
+        /*ローカルストレージのキーをインデックスを取得*/
+        for (var i = 0, length = localStorage.length; i < length; ++i) {
+          localStorage_keys.push(localStorage.key(i));
+        }
+
+        /*ローカルストレージからお気に入りを一覧で表示する*/
+        for (let i = 0; i < localStorage_keys.length; i++) {
+          const meigenJson = JSON.parse(
+            localStorage.getItem(localStorage_keys[i])
+          );
+
+          const img = document.createElement("img");
+          const meigen = document.createElement("h2");
+          const auther = document.createElement("h4");
+          const div = document.createElement("div");
+          div.classList.add("collection_infos");
+          const collection = document.querySelector(".collection");
+
+          img.src = meigenJson.catUrl;
+          meigen.textContent = meigenJson.meigen;
+          auther.textContent = meigenJson.auther;
+
+          img.onclick = function () {
+            $("#overflow").show();
+            $(".conf").html(
+              "<img alt = 'cat' src=" + meigenJson.catUrl + ">"+"<h2>" +
+                meigenJson.meigen +
+                "</h2><h4>" +
+                meigenJson.auther +
+                "</h4>" +
+                "<button onclick='cansel()'>戻る</button>"
+            );
+          };
+
+          div.appendChild(img);
+          div.appendChild(meigen);
+          div.appendChild(auther);
+
+          collection.appendChild(div);
+
+          console.log(i);
+        }
+      };
+      function check() {
+        $("#overflow").show();
+      }
+      function cansel() {
+        $("#overflow").hide(); // 確認ボックスを消す
+      }
+      function next() {
+        $("#overflow").hide();
+        // ok後の処理を書く
+      }
+    </script>
+  </body>
+</html>
